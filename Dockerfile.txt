@@ -1,0 +1,24 @@
+FROM php:8.2-apache
+
+# Install required extensions
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Enable Apache modules
+RUN a2enmod rewrite headers
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy application files
+COPY . .
+
+# Set permissions for writable files
+RUN chmod 777 users.json error.log \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]
